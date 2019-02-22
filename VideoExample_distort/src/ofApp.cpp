@@ -4,13 +4,54 @@
 void ofApp::setup(){
     video.loadMovie( "dog.mp4" );
     video.play();
-    bool functionone;
+
+    for ( int i=0; i<16; i++ ) {
+        table[i] = ofRandom( 0, 255 );
+    }
     
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     video.update();
+    if (functiontwo == true){
+        //Do computing only if a new frame was obtained
+        if ( video.isFrameNew() ) {
+            //Getting pixels
+            ofPixels pixels = video.getPixelsRef();
+            
+            //Scan all the pixels
+            for (int y=0; y<pixels.getHeight(); y++) {
+                for (int x=0; x<pixels.getWidth(); x++) {
+                    //Getting pixel (x,y) color
+                    ofColor col = pixels.getColor( x, y );
+                    
+                    //Change color components of col
+                    //using table
+                    col.r = table[ col.r/4 ];
+                    col.g = table[ col.g/4 ];
+                    col.b = table[ col.b/4 ];
+                    
+                    if ( fmod(ofGetElapsedTimef(),2.0) == 0){
+                        col.r = table[ col.r/32 ];
+                        col.g = table[ col.g/32 ];
+                        col.b = table[ col.b/32 ];
+                    }
+
+                    
+                    
+                    //Set the color back to the pixel (x,y)
+                    pixels.setColor( x, y, col );
+                }
+            }
+            
+            //Set pixel array to the image
+            image2.setFromPixels( pixels );
+        }
+        
+    }
+    
+    
     
     if (functionone ==true){
     //Do computing only if a new frame was obtained
@@ -62,20 +103,16 @@ void ofApp::draw(){
     //Draw image
     ofSetColor( 255, 255, 255 );
     if(functionone == true){
-    image.draw(0,0);
+        image.draw(0,0);
+    }
+    if(functiontwo == true){
+        image2.draw(0,0);
     }
 }
 
 ofColor ofApp::getSlitPixelColor( int x, int y ){
-    //Calculate the distance from (x,y) to the current
-    //mouse position mouseX, mouseY
-    float dist = ofDist( x, y, mouseX, mouseY );
-    
     //Main formula for connecting (x,y) with frame number
     float f = x/8;
-    //Here "frame number" is computer as a float value.
-    //We need it for getting a "smooth result"
-    //by interpolating colors later
     
     //Compute two frame numbers surrounding f
     int i0 = int( f );
@@ -103,11 +140,15 @@ ofColor ofApp::getSlitPixelColor( int x, int y ){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     switch(key){
-        case 'a':
+        case '1':
             functionone = true;
             break;
-            
-            
+        case '2':
+            functiontwo = true;
+            break;
+        case 'r':
+            functionone = false;
+            functiontwo = false;
     }
 
 }

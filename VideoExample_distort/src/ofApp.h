@@ -29,7 +29,13 @@ class ofApp : public ofBaseApp{
     //Pixels array for constructing output image
     ofPixels imagePixels;
     ofImage image;                //Output image
+    ofImage image2;
      ofColor getSlitPixelColor( int x, int y );
     
     bool functionone = false;
+    bool functiontwo = false;
+    
+    int table[16];        //Declare table for color replacing
+
+    
 };

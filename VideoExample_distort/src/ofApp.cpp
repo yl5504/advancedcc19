@@ -4,6 +4,7 @@
 void ofApp::setup(){
     video.loadMovie( "dog.mp4" );
     video.play();
+    bool functionone;
     
 }
 
@@ -11,6 +12,7 @@ void ofApp::setup(){
 void ofApp::update(){
     video.update();
     
+    if (functionone ==true){
     //Do computing only if a new frame was obtained
     if ( video.isFrameNew() ) {
         //Push the new frame to the beginning of the frame list
@@ -49,15 +51,19 @@ void ofApp::update(){
         //Set new pixels values to the image
         image.setFromPixels( imagePixels );
     }
+        
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofBackground(255, 255, 255);    //Set white background
-    
+    video.draw(0,0);
     //Draw image
     ofSetColor( 255, 255, 255 );
+    if(functionone == true){
     image.draw(0,0);
+    }
 }
 
 ofColor ofApp::getSlitPixelColor( int x, int y ){
@@ -97,6 +103,9 @@ ofColor ofApp::getSlitPixelColor( int x, int y ){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     switch(key){
+        case 'a':
+            functionone = true;
+            break;
             
             
     }

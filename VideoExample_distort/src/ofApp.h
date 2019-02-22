@@ -29,5 +29,7 @@ class ofApp : public ofBaseApp{
     //Pixels array for constructing output image
     ofPixels imagePixels;
     ofImage image;                //Output image
-     ofColor getSlitPixelColor( int x, int y );    
+     ofColor getSlitPixelColor( int x, int y );
+    
+    bool functionone = false;
 };

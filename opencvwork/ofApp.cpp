@@ -19,6 +19,7 @@ void ofApp::setup() {
     bLearnBakground = true;
     threshold = 40;
     
+    
 }
 
 
@@ -34,7 +35,7 @@ void ofApp::update() {
     //azusa------------------------------------------------------------------
     bool bNewFrame = false;
     bNewFrame = video.isFrameNew();
-    
+    ofSetColor(col);
     if (bNewFrame){
         colorImg.setFromPixels(video.getPixels());
         grayImage2 = colorImg;
@@ -148,18 +149,20 @@ void ofApp::update() {
             generateImg( mask.width, mask.height );
         }
     }
+   
 }
-
 
 void ofApp::draw() {
     ofBackground(0);
+   
+    
     if ( drawMode == 0 ) {
         ofBackground(0);    //Set the background color
         int w = imageDecimated.width;
         int h = imageDecimated.height;
     
         ofPushStyle();
-        ofSetColor(50, 50, 50 );
+        ofSetColor(50,0,0);
         colorImg.draw(0, 0, ofGetWindowWidth()/2, ofGetWindowHeight()/2 );
         ofPopStyle();
         
@@ -170,15 +173,16 @@ void ofApp::draw() {
         
         //Draw found contours
         contourFinder.draw( 0, h+10, w, h );
-        ofSetLineWidth( 1 );
+        ofSetLineWidth( 3 );
     }
     else {
         //Additional rendering - draw generated image over original video
         ofEnableAlphaBlending();
-        ofSetColor( 255, 255, 255 );
-        video.draw( 100, 100 );
-        img.draw( 0, 0, 640, 360 );
+        ofSetColor( 0,122, 255 );
+        video.draw( 0, 0 );
+        img.draw( 0, 370, 640, 360 );
     }
+  
     //Draw only if diffFloat image is ready.
     //It happens when the second frame from the video is obtained
     if ( diffFloat.bAllocated ) {
@@ -186,23 +190,19 @@ void ofApp::draw() {
         int w = grayImage.width;
         int h = grayImage.height;
         
-      
-       
-        
         //Draw images grayImage,  diffFloat, bufferFloat
         ofPushStyle();
-        ofSetColor( 0, 122, 255 );
-       // diffFloat.draw( ofGetWindowWidth()/2, ofGetWindowHeight()/2,ofGetWindowWidth()/2, ofGetWindowHeight()/2);
+        ofSetColor( 0, 0, 255 );
+        diffFloat.draw( ofGetWindowWidth()/2, ofGetWindowHeight()/2,ofGetWindowWidth()/2, ofGetWindowHeight()/2);
         ofPopStyle();
         
         ofPushStyle();
-        ofSetColor( 150, 122, 255 );
+        ofSetColor( 0, 122, 255 );
     
         bufferFloat.draw(ofGetWindowWidth()/2, ofGetWindowHeight()/2, ofGetWindowWidth()/2, ofGetWindowHeight()/2 );
          ofPopStyle();
         //Draw the image motion areas
         
-        //AZUSA
         ofPushStyle();
         // draw the incoming video image
         ofSetHexColor(0xffffff);
@@ -212,8 +212,7 @@ void ofApp::draw() {
         
         //if we want to draw an outline around our blob path
         ofNoFill();
-        ofSetColor(ofColor::orange);
-        
+        ofSetColor(col);
         ofBeginShape();
         //we loop through each of the detected blobs
         //contourFinder.nBlobs gives us the number of detected blobs
@@ -224,10 +223,8 @@ void ofApp::draw() {
             }
         }
         ofEndShape();
-       ofPopMatrix();
+        ofPopMatrix();
         ofPopStyle();
-//
-//
 //        ofTranslate( ofGetWindowWidth()/2, ofGetWindowHeight()/2);
 //        ofScale( 0.5, 0.5 );
         
@@ -237,7 +234,7 @@ void ofApp::draw() {
         ofScale( 0.5, 0.5 );
         
        // Draw bounding rectangle
-        ofSetColor(0,0,0);
+        ofSetColor(0,0,255);
         ofNoFill();
         ofRect( -1, -1, w+2, h+2 );
        
@@ -265,32 +262,7 @@ void ofApp::draw() {
         // draw the incoming video image
         ofSetHexColor(0xffffff);
         ofPushMatrix();
-        //        ofTranslate(ofGetWidth()/2 - colorImg.getWidth()/2,ofGetHeight()/2 - colorImg.getHeight()/2);
-        
-        
-//        //if we want to draw an outline around our blob path
-//        ofNoFill();
-//        ofSetColor(ofColor::orange);
-//
-//        ofBeginShape();
-//        //we loop through each of the detected blobs
-//        //contourFinder.nBlobs gives us the number of detected blobs
-//        for (int i = 0; i < contourFinder.nBlobs; i++){
-//            //each of our blobs contains a vector<ofPoints> pts
-//            for(int j=0; j < contourFinder.blobs[i].pts.size(); j++){
-//                ofVertex(contourFinder.blobs[i].pts[j].x, contourFinder.blobs[i].pts[j].y);
-//            }
-//        }
-//        ofEndShape();
-//        ofPopMatrix();
-//        ofPopStyle();
-//
-//
-//        ofTranslate( ofGetWindowWidth()/2, ofGetWindowHeight()/2);
-//        ofScale( 0.5, 0.5 );
-//
     
- //   ofSetupScreenOrtho(ofGetWidth(), ofGetHeight(), -100, +100);
     ofSetupScreenOrtho(ofGetWidth(), ofGetHeight(), -200, +300);
     ofEnableDepthTest();
     
@@ -306,8 +278,7 @@ void ofApp::draw() {
     
     
 }
-    void ofApp::generateImg( int w, int h )
-    {
+    void ofApp::generateImg( int w, int h ){
         if ( !img.bAllocated() ) {
             img.allocate( w, h, OF_IMAGE_COLOR_ALPHA );
         }
@@ -343,5 +314,28 @@ void ofApp::draw() {
         }
         img.update();
     }
+// kepress to draw contour lines
 
-
+void ofApp::keyPressed(int key){
+    if ( key == '1' ) {
+        drawMode = 0;
+    }
+    if ( key == '2' ) {
+        drawMode = 1;
+    }
+    if (key == 'p' ){
+        col = ofColor(255,182,193);
+    }
+    if (key == 'y' ){
+        col = ofColor(255,215,0);
+    }
+    if (key == 'b' ){
+        col = ofColor(0,255,255);
+    }
+    if (key == 'w' ){
+        col = ofColor(255,255,255);
+    }
+    if (key == 'r' ){
+        col = ofColor(ofRandom( 0, 255 ), ofRandom( 0, 255 ), ofRandom( 128, 255 ));
+    }
+}
